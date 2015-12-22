@@ -6,25 +6,28 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+var attachmentData = {
+  "heads": {
+    text: "Heads",
+    image_url: "https://s3-us-west-2.amazonaws.com/doctrines.co.attachments/heads.jpg",
+    color: "#ff0000"
+  },
+  "tails": {
+    text: "Tails",
+    image_url: "https://s3-us-west-2.amazonaws.com/doctrines.co.attachments/tails.jpg",
+    color: "#0000ff"
+  }
+};
+
 function flipCoin() {
-  // Either 3 or 2 returned
-  var num = Math.floor(Math.random() * (3 - 2 + 1)) + 2;
-  return num === 3 ? "Heads" : "Tails";
+  var num = Math.floor(Math.random() * (3 - 2 + 1)) + 2; // Either 3 or 2 returned
+  return num === 3 ? attachmentData["heads"] : attachmentData["tails"];
 };
 
 app.post('/', function (req, res) {
-
-  var side = flipCoin();
-
   res.json({
     response_type: "in_channel",
-    attachments: [
-      {
-        "text": side,
-        "image_url": `https://s3-us-west-2.amazonaws.com/doctrines.co.attachments/${side.toLowerCase()}.jpg`,
-        "color": "#000000"
-      }
-    ]
+    attachments: [ flipCoin() ]
   });
 });
 
