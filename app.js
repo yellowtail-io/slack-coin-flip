@@ -34,11 +34,12 @@ app.post('/', function (req, res) {
 app.get('/', function (req, res) {
   res.json("welcome");
 });
+
 app.get('/auth', function (req, res) {
   res.json("welcome, auth");
 });
 
-var server = app.listen(3000, function () {
+var server = app.listen(process.env.PORT || 3000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
