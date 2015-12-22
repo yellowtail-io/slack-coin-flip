@@ -1,0 +1,15 @@
+{
+  "name": "slack-coin-flip",
+  "version": "0.0.1",
+  "description": "Flip a coin in slack!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Watkins",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3"
+  }
+}
