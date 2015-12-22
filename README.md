@@ -4,10 +4,7 @@ Flip a coin in slack!
 
 ## Install
 
-- Host this Node.js script on a server
-- Create a slash commend (e.g. `flip-coin`)
-- Point command to URL that hosts the script
-- Have fun!
+[![Add to Slack](https://platform.slack-edge.com/img/add_to_slack.png)](https://slack.com/oauth/authorize?scope=commands&client_id=3794526773.17228298610)
 
 ## Usage
 
