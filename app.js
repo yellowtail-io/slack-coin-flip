@@ -1,5 +1,7 @@
 var express = require('express'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    passport = require('passport')
+    SlackStrategy = require('passport-slack').Strategy;
 
 var app = express();
 
@@ -24,6 +26,15 @@ function flipCoin() {
   return num === 3 ? attachmentData["heads"] : attachmentData["tails"];
 };
 
+passport.use(new SlackStrategy({
+    clientID: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log("access token received", accessToken);
+  }
+));
+
 app.post('/', function (req, res) {
   res.json({
     response_type: "in_channel",
@@ -35,9 +46,15 @@ app.get('/', function (req, res) {
   res.json("welcome");
 });
 
-app.get('/auth', function (req, res) {
-  res.json("welcome, auth");
-});
+app.get('/auth/slack',
+  passport.authorize('slack'));
+
+app.get('/auth/slack/callback',
+  passport.authorize('slack', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 var server = app.listen(process.env.PORT || 3000, function () {
   var host = server.address().address;
