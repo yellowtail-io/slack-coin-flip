@@ -28,7 +28,9 @@ function flipCoin() {
 
 passport.use(new SlackStrategy({
     clientID: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    scope: 'commands',
+    callbackUrl: process.env.DOMAIN + '/auth/slack/callback'
   },
   function(accessToken, refreshToken, profile, done) {
     console.log("access token received", accessToken);
