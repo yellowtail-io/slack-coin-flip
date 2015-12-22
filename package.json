@@ -11,8 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "botkit": "0.0.4",
     "express": "^4.13.3",
     "passport": "^0.3.2",
-    "passport-slack": "0.0.4"
+    "passport-slack": "0.0.4",
+    "request": "^2.67.0"
   }
 }

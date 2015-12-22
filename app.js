@@ -1,12 +1,5 @@
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    passport = require('passport')
-    SlackStrategy = require('passport-slack').Strategy;
-
-var app = express();
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+var Botkit = require('botkit'),
+    controller = Botkit.slackbot();
 
 var attachmentData = {
   "heads": {
@@ -26,41 +19,33 @@ function flipCoin() {
   return num === 3 ? attachmentData["heads"] : attachmentData["tails"];
 };
 
-passport.use(new SlackStrategy({
-    clientID: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET,
-    scope: 'commands',
-    callbackUrl: process.env.DOMAIN + '/auth/slack/callback'
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log("access token received", accessToken);
-  }
-));
-
-app.post('/', function (req, res) {
-  res.json({
-    response_type: "in_channel",
-    attachments: [ flipCoin() ]
-  });
+controller.configureSlackApp({
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
+  scopes: ['commands']
 });
 
-app.get('/', function (req, res) {
-  res.json("welcome");
-});
+controller.setupWebserver(process.env.PORT, function(err, webserver) {
 
-app.get('/auth/slack',
-  passport.authorize('slack'));
+  console.log("Starting Coin Flip at ", process.env.PORT);
 
-app.get('/auth/slack/callback',
-  passport.authorize('slack', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
+  webserver.get('/',function(req,res) {
+    res.send("Welcome!");
   });
 
-var server = app.listen(process.env.PORT || 3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+  webserver.post('/', function(req, res) {
+    res.json({
+      response_type: "in_channel",
+      attachments: [ flipCoin() ]
+    });
+  });
 
-  console.log('Slack coin flip listening at http://%s:%s', host, port);
+  controller.createOauthEndpoints(controller.webserver, function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
+
 });
